@@ -10,7 +10,7 @@ class MockModel {
    */
   static async findAll() {
     return {
-      status: 'success',
+      status: 'Pancho el rey palomo!',
       data: {
         message: 'API test successful',
         items: [
