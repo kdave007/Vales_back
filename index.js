@@ -6,7 +6,8 @@ const PORT = 3000;
 app.use(express.json());
 
 // Usar rutas
-const routes = require('./src/routes');
+const routes = require('./src/routes/index');
+
 app.use('/api', routes); // Todas las rutas empiezan con /api
 
 // Iniciar el servidor
