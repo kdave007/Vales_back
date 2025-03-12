@@ -4,6 +4,6 @@ const router = express.Router();
 const { test } = require('../controllers/mockController');
 
 // Test endpoint
-router.get('/test', test);       
+router.get('/', test);       
 
 module.exports = router;
