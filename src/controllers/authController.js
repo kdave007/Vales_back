@@ -1,30 +1,68 @@
-// src/controllers/authController.js
-// Este es el controlador de autenticación. Aquí se manejarán las solicitudes de autenticación.
+const jwt = require('jsonwebtoken');
+const jwtConfig = require('../config/jwtConfig'); 
 
-// Importar modelos
-const User = require('../models/user');
+// In a real application, this should be in a database
+const users = [
+    { id: 1, username: 'david', password: '123' },
+    { id: 2, username: 'aram', password: 'qwe' }
+];
 
-// Función para iniciar sesión
 const login = async (req, res) => {
-  // Extraer credenciales de la solicitud
-  const { email, password } = req.body;
+    const { username, password } = req.body;
 
-  try {
-    // Buscar el usuario en la base de datos
-    const user = await User.findOne({ email });
-
-    // Verificar si el usuario existe y si la contraseña es correcta
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ msg: 'Credenciales incorrectas' });
+    // Validate request body
+    if (!username || !password) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Username and password are required'
+        });
     }
 
-    // Generar un token de autenticación y enviarlo al cliente
-    const token = await user.generateAuthToken();
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: 'Error al iniciar sesión' });
-  }
+    try {
+        const userFound = users.find(u => 
+            u.username === username && 
+            u.password === password
+        );
+
+        if (!userFound) {
+            return res.status(401).json({
+                status: 'error',
+                message: 'Invalid credentials'
+            });
+        }
+
+        const token = generateToken(userFound);
+
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                token,
+                user: {
+                    id: userFound.id,
+                    username: userFound.username
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Internal server error'
+        });
+    }
+};
+
+const generateToken = (user) => {
+    const payload = {
+        userId: user.id,
+        username: user.username
+    };
+
+    return jwt.sign(
+        payload,
+        jwtConfig.secret,
+        { expiresIn: jwtConfig.expiresIn }
+    );
 };
 
 module.exports = { login };
