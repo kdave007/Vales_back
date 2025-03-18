@@ -8,12 +8,12 @@ const valesModel = new ValesModel(db);
 const getbyDate = async (req, res) => {
     const { startDate, endDate } = req.validatedDates;
     try {
-        let result = await valesModel.getbyDate(startDate, endDate);
-        result = sort(result);
+        const result = await valesModel.getbyDate(startDate, endDate);
+        const sorted = sort(result);
 
         return res.status(200).json({
             status: 'success',
-            data: result
+            data: sorted
         });
     } catch (err) {
         console.error('Error in getbyDate:', err);
@@ -27,12 +27,12 @@ const getbyDate = async (req, res) => {
 
 const getLatest = async (req, res) => {
     try {
-        let result = await valesModel.getLatest();
-        result = sort(result);
+        const result = await valesModel.getLatest();
+        const sorted = sort(result);
 
         return res.status(200).json({
             status: 'success',
-            data: result
+            data: sorted
         });
     } catch (err) {
         console.error('Error in getLatest:', err);
@@ -49,7 +49,7 @@ const sort = (data) => {
 
     for(let i = 0; i < data.length; i++){
         
-        let partition = {
+        const partition = {
             id_documento:  data[i].id_documento,
                 pa_id:  data[i].pa_id,
                 clave:  data[i].clave,
@@ -58,7 +58,7 @@ const sort = (data) => {
                 precio:  data[i].precio,
                 impuesto:  data[i].impuesto
         }
-        let header = {
+        const header = {
             ca_id: data[i].ca_id,
             llave: data[i].llave,
             cve_origen_pos: data[i].cve_origen_pos,
@@ -71,7 +71,7 @@ const sort = (data) => {
             fecha_descarga: data[i].fecha_descarga,
         }
 
-        let foundHeader = sortedData.find(element => element.ca_id === data[i].ca_id);
+        const foundHeader = sortedData.find(element => element.ca_id === data[i].ca_id);
 
         if(!foundHeader){
             header['partes'] = [partition];
@@ -82,10 +82,10 @@ const sort = (data) => {
         
     }
     
-    // sortedData.forEach( element => {
-    //     console.log(element);
+    sortedData.forEach( element => {
+        console.log(element);
         
-    // })
+    })
         return sortedData;
 }
 
