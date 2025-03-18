@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { getbyRange, getLatestData } = require('../controllers/genericDataController');
+const { getbyDate, getLatest } = require('../controllers/valesController');
 const { validateDateRange } = require('../middleware/dateValidation');
 const { validate } = require('../middleware/authValidation')
 
-router.post('/data', express.json(), validate, validateDateRange, getbyRange);
-router.get('/data', validate, getLatestData);
+router.post('/data', express.json(), validate, validateDateRange, getbyDate);
+router.get('/data', validate, getLatest);
 
 module.exports = router;
